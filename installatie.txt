@@ -1,0 +1,6 @@
+1. Maak een nieuwe database aan genaamd 'eafwebshop' (CREATE DATABASE eafwebshop;)
+2. importeer de database met het volgende commando in command promp:
+
+mysql -u root -p eafwebshop < pad\naar\map\EAFwebshop.sql
+
+3. voer statements van gebruikers.sql uit om priveleges in te stellen.

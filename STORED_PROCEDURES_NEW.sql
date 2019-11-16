@@ -1,16 +1,16 @@
---show procedure--
+-- show procedure--
 show create procedure read_bestelling;
---show stored procedures--
+-- show stored procedures--
 show procedure status where db = "webshop";
---rename stored procedure--
+-- rename stored procedure--
 update mysql.proc set name = "create_categorie", specific_name="create_categorie" where db="webshop" AND name="toevoegen_categorie";
---show users
+-- show users
 select user, host FROM mysql.user;
---delete users--
+-- delete users--
 DROP USER beheer@localhost, bezoeker@localhost;
 
 
---berichten--
+-- berichten--
 DELIMITER //
 CREATE PROCEDURE create_bericht(IN onderwerp VARCHAR(100), IN inhoud TEXT)
 BEGIN
@@ -31,7 +31,7 @@ SELECT * FROM bericht;
 END //
 DELIMITER ;
 
---artikelen--
+-- artikelen--
 DELIMITER //
 CREATE PROCEDURE list_artikelen(IN product_cat_naam VARCHAR(30))
 BEGIN
@@ -54,7 +54,7 @@ DEALLOCATE PREPARE stmt;
 END //
 DELIMITER ;
 
---categorie--
+-- categorie--
 DELIMITER //
 CREATE PROCEDURE read_categorie(IN categorieNaam VARCHAR(30))
 BEGIN
@@ -73,7 +73,7 @@ SELECT categorieID, naam FROM categorie;
 END //
 DELIMITER ;
 
---profiel--
+-- profiel--
 DROP PROCEDURE IF EXISTS read_profiel;
 DELIMITER //
 CREATE PROCEDURE read_profiel (IN gebruikersnaam VARCHAR(30), IN wachtwoord CHAR(64))
@@ -87,7 +87,7 @@ DEALLOCATE prepare stmt;
 END //
 DELIMITER ;
 
---bestellingen--
+-- bestellingen--
 DELIMITER //
 CREATE PROCEDURE list_klant_bestelling (IN klantnr INT(6))
 BEGIN
@@ -111,9 +111,9 @@ DEALLOCATE PREPARE stmt;
 END //
 DELIMITER ;
 
----------------------
---create_bestelling--
----------------------
+-- -------------------
+-- create_bestelling--
+-- -------------------
 DELIMITER //
 DROP PROCEDURE IF EXISTS create_bestelling_line
 CREATE PROCEDURE create_bestelling(artikelnr INT(6), aantal INT(3))
@@ -128,7 +128,7 @@ DEALLOCATE PREPARE stmt;
 END //
 DELIMITER ;
 
---create_bestelnr //creates new bestelnr for new order, for use in java
+-- create_bestelnr //creates new bestelnr for new order, for use in java
 DELIMITER //
 CREATE PROCEDURE create_bestelnr()
 BEGIN
@@ -137,7 +137,7 @@ END //
 DELIMITER ;
 
 
---create_besteld //puts artikelnr, prijs, aantal, prijsaantal inside besteld
+-- create_besteld //puts artikelnr, prijs, aantal, prijsaantal inside besteld
 DELIMITER //
 CREATE PROCEDURE create_besteld(artikelnr int(6), aantal int(3), bestelnr INT(6))
 BEGIN
@@ -180,9 +180,9 @@ DEALLOCATE PREPARE stmt3;
 END //
 DELIMITER ;
 
----------------------
---create_bestelling--
----------------------
+-- -------------------
+-- create_bestelling--
+-- -------------------
 
 DELIMITER //
 DROP PROCEDURE IF EXISTS create_bestelling;
@@ -253,9 +253,9 @@ DEALLOCATE PREPARE stmt6;
 END //
 DELIMITER ;
 
---SELECT @bestelnr, @klantnr, @besteldatum, @artikelen, @totaalbedragExBtw, @btw9, @btw21, @totaalbedragIncBtw, @ordergewicht, @aantalpaketten, @verzendkosten, @totaalIncVerzendkosten, @orderstatus;
+-- SELECT @bestelnr, @klantnr, @besteldatum, @artikelen, @totaalbedragExBtw, @btw9, @btw21, @totaalbedragIncBtw, @ordergewicht, @aantalpaketten, @verzendkosten, @totaalIncVerzendkosten, @orderstatus;
 
---create contactformulier--
+-- create contactformulier--
 DELIMITER //
 CREATE PROCEDURE create_contactformulier(IN naam VARCHAR(30), IN email VARCHAR(100), IN onderwerp VARCHAR(60), IN bericht TEXT)
 BEGIN
@@ -278,13 +278,13 @@ DEALLOCATE PREPARE stmt;
 END //
 DELIMITER ;
 
------------------------------------------------------------------
----default is CREATE DEFINER 'root'@'localhost' PROCEDURE p1 ...
----dit is omdat met het werken van stored procedures het van belang is dat gebruikers de procedure kunnen uitvoeren---
----voorzolang de procedure geen operaties uitvoert die van de ene gebruiker ten opzichte van de andere moeten afwijken
----hoeft CREATE INVOKER ... niet te worden gedefinieert---------
------------------------------------------------------------------
----create_klant---
+-- ---------------------------------------------------------------
+-- -default is CREATE DEFINER 'root'@'localhost' PROCEDURE p1 ...
+-- -dit is omdat met het werken van stored procedures het van belang is dat gebruikers de procedure kunnen uitvoeren---
+-- -voorzolang de procedure geen operaties uitvoert die van de ene gebruiker ten opzichte van de andere moeten afwijken
+-- -hoeft CREATE INVOKER ... niet te worden gedefinieert---------
+-- ---------------------------------------------------------------
+-- -create_klant---
 DROP PROCEDURE IF EXISTS create_klant;
 DELIMITER //
 CREATE PROCEDURE create_klant (IN gebruikersnaam VARCHAR(100), IN wachtwoord CHAR(64), IN voornaam VARCHAR(30), IN achternaam VARCHAR(30), IN geslacht CHAR(3), IN straatnaam VARCHAR(30), IN huisnummer CHAR(4), IN postcode CHAR(6), IN woonplaats VARCHAR(30))
@@ -378,23 +378,42 @@ DEALLOCATE PREPARE gstmt13;
 END //
 DELIMITER ;
 
-----privileges guest-----
+-- --privileges guest-----
 GRANT EXECUTE ON PROCEDURE read_artikel TO 'guest'@'localhost';
 GRANT EXECUTE ON PROCEDURE read_categorie TO  'guest'@'localhost';
 GRANT EXECUTE ON PROCEDURE list_artikelen TO  'guest'@'localhost';
 GRANT EXECUTE ON PROCEDURE list_bericht TO  'guest'@'localhost';
 GRANT EXECUTE ON PROCEDURE list_categorie TO  'guest'@'localhost';
 GRANT EXECUTE ON PROCEDURE create_contactformulier TO  'guest'@'localhost';
+GRANT EXECUTE ON PROCEDURE check_existing_email TO 'guest'@'localhost';
+GRANT EXECUTE ON PROCEDURE read_profiel TO 'guest'@'localhost';
 
---extra privileges generated users--
-create_bestelnr, create_besteld, create_bestelling, read_bestelling, list_klant_bestelling;
+-- extra privileges generated users--
+-- create_bestelnr, create_besteld, create_bestelling, read_bestelling, list_klant_bestelling;
 
 create user 'guest'@'localhost' IDENTIFIED BY 'guest';
 
+-- priveleges for test gebruik p.boven@mail.com
++-----------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `p.boven@mail.com`@`localhost`                                                |
+| GRANT EXECUTE ON PROCEDURE `eafwebshop`.`create_besteld` TO `p.boven@mail.com`@`localhost`          |
+| GRANT EXECUTE ON PROCEDURE `eafwebshop`.`create_bestelling` TO `p.boven@mail.com`@`localhost`       |
+| GRANT EXECUTE ON PROCEDURE `eafwebshop`.`create_bestelnr` TO `p.boven@mail.com`@`localhost`         |
+| GRANT EXECUTE ON PROCEDURE `eafwebshop`.`create_contactformulier` TO `p.boven@mail.com`@`localhost` |
+| GRANT EXECUTE ON PROCEDURE `eafwebshop`.`list_artikelen` TO `p.boven@mail.com`@`localhost`          |
+| GRANT EXECUTE ON PROCEDURE `eafwebshop`.`list_bericht` TO `p.boven@mail.com`@`localhost`            |
+| GRANT EXECUTE ON PROCEDURE `eafwebshop`.`list_categorie` TO `p.boven@mail.com`@`localhost`          |
+| GRANT EXECUTE ON PROCEDURE `eafwebshop`.`list_klant_bestelling` TO `p.boven@mail.com`@`localhost`   |
+| GRANT EXECUTE ON PROCEDURE `eafwebshop`.`read_artikel` TO `p.boven@mail.com`@`localhost`            |
+| GRANT EXECUTE ON PROCEDURE `eafwebshop`.`read_bestelling` TO `p.boven@mail.com`@`localhost`         |
+| GRANT EXECUTE ON PROCEDURE `eafwebshop`.`read_categorie` TO `p.boven@mail.com`@`localhost`          |
+| GRANT EXECUTE ON PROCEDURE `eafwebshop`.`read_profiel` TO `p.boven@mail.com`@`localhost`            |
++-----------------------------------------------------------------------------------------------------+
+
 call create_klant("p.boven@mail.com", "131313", "Peter", "Boven", "M", "weg", "146A", "1100BB", "Polder");
 
---unique emailadress---
-DROP PROCEDURE IF EXISTS check_existing_email
+-- unique emailadress---
+DROP PROCEDURE IF EXISTS check_existing_email;
 DELIMITER //
 CREATE PROCEDURE check_existing_email (IN gebruikersnaam VARCHAR(100))
 BEGIN

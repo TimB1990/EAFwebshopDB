@@ -59,7 +59,7 @@ CREATE TABLE `bericht` (
   `inhoud` varchar(400) DEFAULT NULL,
   `datum` datetime DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +68,7 @@ CREATE TABLE `bericht` (
 
 LOCK TABLES `bericht` WRITE;
 /*!40000 ALTER TABLE `bericht` DISABLE KEYS */;
-INSERT INTO `bericht` VALUES (1,'Nu ook accessoires voor kleine knaagdieren!','Houdt U ook zo van kleine knaagdieren, bekijk ons assortiment','2019-05-25 19:18:14');
+INSERT INTO `bericht` VALUES (1,'Nu ook accessoires voor kleine knaagdieren!','Houdt U ook zo van kleine knaagdieren, bekijk ons assortiment','2019-05-25 19:18:14'),(3,'Nu sinterklaas korting','houdt jou diertje ook zo van sinterklaas, profiteer dan nu van wel 10% korting!!','2019-11-16 20:46:55');
 /*!40000 ALTER TABLE `bericht` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -99,7 +99,7 @@ CREATE TABLE `besteld` (
 
 LOCK TABLES `besteld` WRITE;
 /*!40000 ALTER TABLE `besteld` DISABLE KEYS */;
-INSERT INTO `besteld` VALUES (203,1,2,300,600,5.46,9,0.54,0.00,6.00);
+INSERT INTO `besteld` VALUES (203,1,2,300,600,5.46,9,0.54,0.00,6.00),(209,2,1,100,100,10.66,21,0.00,2.84,13.50),(201,2,3,2000,6000,13.65,9,1.35,0.00,15.00);
 /*!40000 ALTER TABLE `besteld` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -133,7 +133,7 @@ CREATE TABLE `bestellingen` (
 
 LOCK TABLES `bestellingen` WRITE;
 /*!40000 ALTER TABLE `bestellingen` DISABLE KEYS */;
-INSERT INTO `bestellingen` VALUES (1,2,'2019-07-24',2,5.46,0.54,0.00,6.00,0.60,1,8.41,14.41,'In behandeling');
+INSERT INTO `bestellingen` VALUES (1,2,'2019-07-24',2,5.46,0.54,0.00,6.00,0.60,1,8.41,14.41,'In behandeling'),(2,2,'2019-11-16',4,24.31,1.35,2.84,28.50,6.10,1,8.41,36.91,'In behandeling');
 /*!40000 ALTER TABLE `bestellingen` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -210,7 +210,7 @@ CREATE TABLE `klanten` (
   `postcode` char(6) DEFAULT NULL,
   `woonplaats` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`klantnr`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -219,13 +219,39 @@ CREATE TABLE `klanten` (
 
 LOCK TABLES `klanten` WRITE;
 /*!40000 ALTER TABLE `klanten` DISABLE KEYS */;
-INSERT INTO `klanten` VALUES (2,'p.boven@mail.com','131313','Peter','Boven','M','weg','146A','1100BB','Polder'),(3,'p.bovendonk@gmail.com','141414','Peter','Bovendonk','M','Straatweg','156A','4741AA','Hoeven'),(4,'p.boven@mail.com','131313','Peter','Boven','M','weg','146A','1100BB','Polder');
+INSERT INTO `klanten` VALUES (2,'p.boven@mail.com','131313','Peter','Boven','M','weg','146A','1100BB','Polder');
 /*!40000 ALTER TABLE `klanten` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
 -- Dumping routines for database 'eafwebshop'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `check_existing_email` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = cp850 */ ;
+/*!50003 SET character_set_results = cp850 */ ;
+/*!50003 SET collation_connection  = cp850_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `check_existing_email`(IN gebruikersnaam VARCHAR(100))
+BEGIN
+
+SET @gebruikersnaam = gebruikersnaam;
+
+SET @query = CONCAT("SELECT gebruikersnaam FROM klanten WHERE gebruikersnaam = ?");
+PREPARE stmt FROM @query;
+EXECUTE stmt USING @gebruikersnaam;
+DEALLOCATE PREPARE stmt;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `create_bericht` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -729,4 +755,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-16 18:29:15
+-- Dump completed on 2019-11-16 20:56:15
